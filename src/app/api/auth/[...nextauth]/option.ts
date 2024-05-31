@@ -1,7 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import  CredentialsProvider  from "next-auth/providers/credentials";
 import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
+import User from "@/model/User";
 import bcryptjs from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
@@ -10,21 +10,15 @@ export const authOptions: NextAuthOptions = {
       id: "credentials",
       name: "Credentials",
       credentials: {
-        username: { label: "Email", type: "email" },
+        username: { label: "email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any,req: any): Promise<any> {
-        if (!credentials || !credentials.email || !credentials.password) {
-          console.log("Credentials not found");
-          return null;
-        }
+      async authorize(credentials: any): Promise<any> {
         await dbConnect();
         try {
           const user = await User.findOne({
             email: credentials.email,
           });
-          console.log("Credentials", credentials.email);
-          console.log("User", user);
           if (!user) {
             throw new Error("No user found with ", credentials.email);
           }
@@ -38,7 +32,6 @@ export const authOptions: NextAuthOptions = {
             return user;
           }
         } catch (error: any) {
-          console.log("Error in authorize", error);
           throw new Error(error);
         }
       },
@@ -49,9 +42,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token._id = user._id?.toString();
         token.isVerified = user.isVerified;
-        token.isUploading = user.isUploading;
         token.username = user.username;
-        token.images = user.images;
       }
       return token;
     },
@@ -59,12 +50,13 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user._id = token._id;
         session.user.isVerified = token.isVerified;
-        session.user.isUploading = token.isUploading;
         session.user.username = token.username;
-        session.user.images = token.images;
       }
       return session;
     }
+  },
+  pages: {
+    signIn: "/login",
   },
   session: {
     strategy: "jwt",

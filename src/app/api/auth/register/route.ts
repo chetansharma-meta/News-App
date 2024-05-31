@@ -1,7 +1,7 @@
 import  dbConnect  from "@/lib/dbConnect";
 
 import bcrypt from "bcrypt";
-import User from "@/models/User";
+import User from "@/model/User";
 
 export const POST = async (req: Request) => {
   await dbConnect();
