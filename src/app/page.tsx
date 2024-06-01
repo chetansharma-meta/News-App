@@ -1,36 +1,69 @@
-"use client"
-import {useSession, signOut} from "next-auth/react";
-import {useRouter} from "next/navigation";
+"use client";
+import { Hero } from "@/components/Hero";
+import { useSession, signOut } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Searchbar } from "@/components/Searchbar";
+import { InfiniteNews } from "@/components/InfiniteNews";
 
 export default function Home() {
-  const {data: session} = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   return (
-    <div className="flex flex-1 flex-col justify-center items-center mt-20 ">
-      <h1 className="text-4xl">Welcome to News Blog</h1>
-      <p className="text-lg mt-4">This is a simple news blog</p>
+    <>
+      <div className="flex flex-1 flex-row justify-center w-full h-screen">
+        <div className="flex justify-center items-center space-x-52 w-4/5">
+          <div className="flex flex-col space-y-4">
+            {session ? (<h1 className="text-4xl font-bold">Welcome Back {session?.user.name   }</h1>) : (<h1 className="text-4xl font-bold">Welcome to our News App</h1>)}
+            <p className="text-lg">Get the latest news and updates</p>
+            <div className="space-x-10 ">
+              <button className="p-[3px] relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg" />
+                <div className="px-8 py-2 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
+                  <Link href={"/news"}>Explore News</Link>
+                </div>
+              </button>
+              {session ? (
+                <button className="px-8 py-1 border-2 border-black hover:translate-x-2 hover:-translate-y-1 dark:border-white uppercase bg-white text-black transition duration-200 text-md shadow-[1px_1px_rgba(0,0,0),2px_2px_rgba(0,0,0),3px_3px_rgba(0,0,0),4px_4px_rgba(0,0,0),5px_5px_0px_0px_rgba(0,0,0)] dark:shadow-[1px_1px_rgba(255,255,255),2px_2px_rgba(255,255,255),3px_3px_rgba(255,255,255),4px_4px_rgba(255,255,255),5px_5px_0px_0px_rgba(255,255,255)] ">
+                  <Link href={"/search"}>Search</Link>
+                </button>
+              ) : (
+                <button className="px-8 py-1 border-2 border-black hover:translate-x-2 hover:-translate-y-1 dark:border-white uppercase bg-white text-black transition duration-200 text-md shadow-[1px_1px_rgba(0,0,0),2px_2px_rgba(0,0,0),3px_3px_rgba(0,0,0),4px_4px_rgba(0,0,0),5px_5px_0px_0px_rgba(0,0,0)] dark:shadow-[1px_1px_rgba(255,255,255),2px_2px_rgba(255,255,255),3px_3px_rgba(255,255,255),4px_4px_rgba(255,255,255),5px_5px_0px_0px_rgba(255,255,255)] ">
+                  <Link href={"/login"}>Login</Link>
+                </button>
+              )}
+            </div>
+          </div>
 
-      <div className="mt-8">
-        {session ? (<button
-          onClick={() => {
-            signOut();
-          }}
-          className="p-2 bg-blue-500 text-white rounded"
-        >
-          Logout
-        </button>) : (
-          
-          <button
+          <div className="">
+            <Hero />
+          </div>
+        </div>
+      </div>
+      <div>
+        <InfiniteNews />
+      </div>
+      {/* <div className="mt-8">
+          {session ? (<button
             onClick={() => {
-              router.push("/login");
+              signOut();
             }}
             className="p-2 bg-blue-500 text-white rounded"
           >
-            Login
-          </button>
-        
-        )}
-        </div>
-    </div>
+            Logout
+          </button>) : (
+            
+            <button
+              onClick={() => {
+                router.push("/login");
+              }}
+              className="p-2 bg-blue-500 text-white rounded"
+            >
+              Login
+            </button>
+          
+          )}
+          </div> */}
+    </>
   );
 }

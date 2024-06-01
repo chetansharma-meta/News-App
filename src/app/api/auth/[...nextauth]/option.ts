@@ -10,7 +10,7 @@ export const authOptions: NextAuthOptions = {
       id: "credentials",
       name: "Credentials",
       credentials: {
-        username: { label: "email", type: "email" },
+        email: { label: "email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any): Promise<any> {
@@ -42,7 +42,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token._id = user._id?.toString();
         token.isVerified = user.isVerified;
-        token.username = user.username;
+        token.email = user.email;
+        token.name = user.firstname + " " + user.lastname;
       }
       return token;
     },
@@ -50,7 +51,8 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user._id = token._id;
         session.user.isVerified = token.isVerified;
-        session.user.username = token.username;
+        session.user.email = token.email;
+        session.user.name = token.name;
       }
       return session;
     }

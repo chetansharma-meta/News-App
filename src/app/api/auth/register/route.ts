@@ -8,12 +8,12 @@ export const POST = async (req: Request) => {
   try {
     const formData = await req.formData();
     console.log("DATA",formData);
-    const username = formData.get("username") as string;
+    const firstname = formData.get("firstname") as string;
+    const lastname = formData.get("lastname") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const existingUser = await User.findOne({
       $or: [
-        {username},
         {email}
       ]
     });
@@ -35,7 +35,8 @@ export const POST = async (req: Request) => {
     expiryDate.setHours(expiryDate.getHours() + 1);
 
     const user = await User.create({
-      username,
+      firstname,
+      lastname,
       email,
       password: hashedPassword,
       verifyCode,
