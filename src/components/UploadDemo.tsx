@@ -1,6 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { Meteors } from "./ui/meteors";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import Router from "next/router";
 
 type Category = "Politics" | "Sports" | "Tech" | "National";
 
@@ -60,10 +63,12 @@ const categories: Record<Category, string[]> = {
 };
 
 export function UploadDemo() {
+  const {data: session} = useSession();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState<Category | "">("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [error, setError] = useState("");
 
   const handleTagToggle = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -77,10 +82,32 @@ export function UploadDemo() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log({ title, content, category, selectedTags });
+    if (!category) {
+      setError("Please select a category.");
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("category", category);
+      selectedTags.forEach((tag) => formData.append("tags[]", tag));
+      formData.append("user", session?.user?._id);
+
+      const response = await axios.post("/api/upload", formData);
+
+      console.log(response.data);
+
+      setTitle("");
+      setContent("");
+      setCategory("");
+      setSelectedTags([]);
+      setError("");
+    } catch (error: any) {
+      setError(error.response?.data.msg || "An error occurred.");
+    }
   };
 
   return (
@@ -147,6 +174,7 @@ export function UploadDemo() {
                 ))}
                   </div>
             </div>
+            {error && <p className="text-red-500">{error}</p>}
 
             <button className="border px-4 py-1 rounded-lg border-gray-500 text-gray-300">
               Upload

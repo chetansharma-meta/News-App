@@ -14,7 +14,7 @@ export default function Home() {
       <div className="flex flex-1 flex-row justify-center w-full h-screen">
         <div className="flex justify-center items-center space-x-52 w-4/5">
           <div className="flex flex-col space-y-4">
-            {session ? (<h1 className="text-4xl font-bold">Welcome Back {session?.user.name   }</h1>) : (<h1 className="text-4xl font-bold">Welcome to our News App</h1>)}
+            {session ? (<h1 className="text-4xl font-bold">Welcome Back {session?.user.name}</h1>) : (<h1 className="text-4xl font-bold">Welcome to our News App</h1>)}
             <p className="text-lg">Get the latest news and updates</p>
             <div className="space-x-10 ">
               <button className="p-[3px] relative">

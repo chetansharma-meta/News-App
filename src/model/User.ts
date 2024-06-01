@@ -5,6 +5,7 @@ export interface User extends Document {
   lastname: string;
   email: string;
   password: string;
+  articles: string[];
   verifyCode: string;
   verfiyCodeExpiry: Date;
 }
@@ -30,6 +31,10 @@ const UserSchema: Schema<User> = new Schema({
     type: String,
     required: [true, "Password is required"]
   },
+  articles: [{
+    type: Schema.Types.ObjectId,
+    ref: "Article"
+  }],
   verifyCode: {
     type: String,
     required: [true, "Verify code is required"]
@@ -40,6 +45,6 @@ const UserSchema: Schema<User> = new Schema({
   },
 })
 
-const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>("User", UserSchema);
+  const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>("User", UserSchema);
 
-export default UserModel;
+  export default UserModel;
