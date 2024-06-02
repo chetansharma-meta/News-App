@@ -33,6 +33,6 @@ ArticleSchema.virtual('commentsCount').get(function () {
 
 // export const Article = model<IArticle>('Article', ArticleSchema);
 
-const Article = (mongoose.models.User as mongoose.Model<IArticle>) || mongoose.model<IArticle>("Article", ArticleSchema);
+const Article = (mongoose.models.Article as mongoose.Model<IArticle>) || mongoose.model<IArticle>("Article", ArticleSchema);
 
 export default Article;

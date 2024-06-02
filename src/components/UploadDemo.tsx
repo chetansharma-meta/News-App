@@ -82,7 +82,7 @@ export function UploadDemo() {
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e:any ) => {
     e.preventDefault();
     if (!category) {
       setError("Please select a category.");
@@ -95,10 +95,12 @@ export function UploadDemo() {
       formData.append("category", category);
       selectedTags.forEach((tag) => formData.append("tags[]", tag));
       formData.append("user", session?.user?._id);
+      
+      console.log("Form Data Before Sending",formData);
 
       const response = await axios.post("/api/upload", formData);
 
-      console.log(response.data);
+      console.log(response);
 
       setTitle("");
       setContent("");
@@ -106,6 +108,7 @@ export function UploadDemo() {
       setSelectedTags([]);
       setError("");
     } catch (error: any) {
+      console.error(error);
       setError(error.response?.data.msg || "An error occurred.");
     }
   };

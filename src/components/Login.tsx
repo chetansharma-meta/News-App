@@ -9,19 +9,34 @@ import {
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export function Login() {
+  const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
   const email = React.useRef("");
   const password = React.useRef("");
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (email.current === "" || password.current === "") {
+      return
+    }
+    setLoading(true);
     const result = await signIn("credentials", {
       email: email.current,
       password: password.current,
-      redirect: true,
-      callbackUrl: "/",
+      redirect: false, // prevent automatic redirect
     });
+
+    if (result?.ok) {
+      setTimeout(() => {
+        setLoading(false);
+        router.push("/");
+      }, 1000);
+    } else {
+      console.error("Sign-in failed");
+    }
     console.log(result);
     console.log(email.current);
     console.log(password.current);
@@ -43,26 +58,43 @@ export function Login() {
               email.current = e.target.value;
             }}
           />
-        </LabelInputContainer>  
+        </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
-          <Input 
-            id="password" 
-            placeholder="••••••••" 
+          <Input
+            id="password"
+            placeholder="••••••••"
             type="password"
             onChange={(e) => {
               password.current = e.target.value;
             }}
-            />
+          />
         </LabelInputContainer>
 
-        <button
-          className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-          type="submit"
-        >
-          Login &rarr;
-          <BottomGradient />
-        </button>
+        {!loading && (
+          <button
+            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+            type="submit"
+          >
+            Login &rarr;
+            <BottomGradient />
+          </button>
+        )}
+        {loading && (
+          <button
+            className="flex justify-center items-center bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+            type="submit"
+          >
+            <Image
+              src="/loading.gif"
+              alt="loading"
+              width={60}
+              height={30}
+              className="items-center justify-center"
+            ></Image>
+            <BottomGradient />
+          </button>
+        )}
 
         <div>
           <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
