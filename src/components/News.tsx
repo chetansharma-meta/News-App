@@ -1,49 +1,50 @@
-import { useEffect } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import { HoverEffect } from "./ui/card-hover-effect";
+import axios from "axios";
 
 export function News() {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchArticles = async () => {
+    const res = await axios.get("/api/news");
+    const data = await res.data;
+    if (res.status !== 200) {
+      setError(data.message);
+      setLoading(false);  
+      return;
+    }
+    console.log(data.articles);
+    setArticles(data.articles);
+    setLoading(false);
+
+  };
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
+  const refresh = () => {
+    fetchArticles();
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-8">
-      <HoverEffect items={projects} />
+      <div className="flex justify-between items-center mx-5 pt-10">
+        <h1 className="text-3xl font-bold">News</h1>
+        {loading ? (
+          <button className="items-end" onClick={refresh}>
+          loading...
+        </button>
+        ): (
+          <button className="items-end" onClick={refresh}>
+          Refresh
+        </button>
+        )}
+      </div>
+
+      <HoverEffect items={articles} />
     </div>
   );
 }
-export const projects = [
-  {
-    title: "Stripe",
-    description:
-      "A technology company that builds economic infrastructure for the internet.",
-    link: "https://stripe.com",
-  },
-  {
-    title: "Netflix",
-    description:
-      "A streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.",
-    link: "https://netflix.com",
-  },
-  {
-    title: "Google",
-    description:
-      "A multinational technology company that specializes in Internet-related services and products.",
-    link: "https://google.com",
-  },
-  {
-    title: "Meta",
-    description:
-      "A technology company that focuses on building products that advance Facebook's mission of bringing the world closer together.",
-    link: "https://meta.com",
-  },
-  {
-    title: "Amazon",
-    description:
-      "A multinational technology company focusing on e-commerce, cloud computing, digital streaming, and artificial intelligence.",
-    link: "https://amazon.com",
-  },
-  {
-    title: "Microsoft",
-    description:
-      "A multinational technology company that develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services.",
-    link: "https://microsoft.com",
-  },
-];

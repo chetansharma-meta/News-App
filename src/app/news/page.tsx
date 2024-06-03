@@ -5,7 +5,6 @@ import { Searchbar } from '@/components/Searchbar'
 function page() {
   return (
     <div className='m-12'>
-      
       <News />
     </div>
   )

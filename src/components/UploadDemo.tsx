@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { Meteors } from "./ui/meteors";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import Router from "next/router";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type Category = "Politics" | "Sports" | "Tech" | "National";
 
@@ -62,13 +63,32 @@ const categories: Record<Category, string[]> = {
   ],
 };
 
-export function UploadDemo() {
+export function UploadDemo(props: { id?: string; title?: string; content?: string; category?: string; tags?: string[] }) {
+  const router = useRouter();
+
+  const id = props.id;
   const {data: session} = useSession();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [category, setCategory] = useState<Category | "">("");
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [category, setCategory] = useState<Category | "">(props.category as Category|| "");
+  const [selectedTags, setSelectedTags] = useState<string[]>(props.tags as Array<string> || []);
   const [error, setError] = useState("");
+  
+  useEffect(() => {
+    if (id) {
+      setTitle(props.title || "");
+      setContent(props.content || "");
+      setCategory(props.category as Category || "");
+      setSelectedTags(props.tags as Array<string> || []); 
+
+      console.log("ID is present",id);
+      console.log("Title is present",props.title);
+      console.log("Content is present",props.content);
+      console.log("Category is present",props.category);
+      console.log("Tags are present",typeof props.tags);
+      console.log("Selected Tags are present",typeof selectedTags);
+    }
+  }, [id]);
 
   const handleTagToggle = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -84,6 +104,29 @@ export function UploadDemo() {
 
   const handleSubmit = async (e:any ) => {
     e.preventDefault();
+    if(id){
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("category", category);
+      selectedTags.forEach((tag) => formData.append("tags[]", tag));
+      formData.append("user", session?.user?._id);
+      
+      console.log("Form Data Before Sending",formData);
+
+      const response = await axios.put(`/api/upload/${id}`, formData);
+
+      console.log("Updation Request is sent")
+      console.log(response);
+
+      setTitle("");
+      setContent("");
+      setCategory("");
+      setSelectedTags([]);
+      setError("");
+      return;
+    }
     if (!category) {
       setError("Please select a category.");
       return;
@@ -107,6 +150,7 @@ export function UploadDemo() {
       setCategory("");
       setSelectedTags([]);
       setError("");
+      router.push("/news");
     } catch (error: any) {
       console.error(error);
       setError(error.response?.data.msg || "An error occurred.");
@@ -180,7 +224,7 @@ export function UploadDemo() {
             {error && <p className="text-red-500">{error}</p>}
 
             <button className="border px-4 py-1 rounded-lg border-gray-500 text-gray-300">
-              Upload
+              {id ? "Update" : "Upload"}
             </button>
           </form>
 
