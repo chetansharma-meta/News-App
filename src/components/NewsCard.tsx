@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Meteors } from "./ui/meteors";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -12,12 +12,33 @@ export function NewsCard(props: {
     const route = useRouter();
   const [like, setLike] = useState(false);
   const [dislike, setDislike] = useState(false);
+  const [author, setAuthor] = useState(props.author);
+  console.log("Author", author);    
+
+useEffect(() => {   
+    async function fetchReaction() {
+        const formData = new FormData();
+        formData.append("user", author);
+        const res = await axios.post(`/api/news/${props.id}/reaction`, formData);
+        const data = res.data;
+        if (!data) return;
+        console.log("Data", data);
+        if (data.type === "like") {
+            setLike(true);
+        } else if (data.type === "dislike") {
+            setDislike(true);
+        }
+    }
+    fetchReaction();
+}, []);
 
   const handleLike = async () => {
     try {
       setLike(!like);
       if (dislike) setDislike(false);
-      await axios.post(`/api/articles/${props.id}/like`, { like: !like });
+      const formData = new FormData();
+        formData.append("user", author);
+      await axios.post(`/api/news/${props.id}/like`, formData);
     } catch (error) {
       console.error("Error updating like status", error);
     }
@@ -27,9 +48,9 @@ export function NewsCard(props: {
     try {
       setDislike(!dislike);
       if (like) setLike(false);
-      await axios.post(`/api/articles/${props.id}/dislike`, {
-        dislike: !dislike,
-      });
+      const formData = new FormData();
+      formData.append("user", author);    
+      await axios.post(`/api/news/${props.id}/dislike`, formData);
     } catch (error) {
       console.error("Error updating dislike status", error);
     }

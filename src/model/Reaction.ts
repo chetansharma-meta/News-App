@@ -1,4 +1,4 @@
-import { Schema, model, Document, Types } from 'mongoose';
+import mongoose, { Schema, model, Document, Types } from 'mongoose';
 
 interface IReaction extends Document {
   user: Types.ObjectId;
@@ -14,4 +14,6 @@ const ReactionSchema = new Schema<IReaction>({
   createdAt: { type: Date, default: Date.now }
 });
 
-export const Reaction = model<IReaction>('Reaction', ReactionSchema);
+const Reaction = (mongoose.models.Reaction as mongoose.Model<IReaction>) || mongoose.model<IReaction>("Reaction", ReactionSchema);
+
+export default Reaction;
