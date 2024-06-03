@@ -71,7 +71,7 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState<Category | "">(props.category as Category|| "");
-  const [selectedTags, setSelectedTags] = useState<string[]>(props.tags as Array<string> || []);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [error, setError] = useState("");
   
   useEffect(() => {
@@ -115,7 +115,7 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
       
       console.log("Form Data Before Sending",formData);
 
-      const response = await axios.put(`/api/upload/${id}`, formData);
+      const response = await axios.put(`/api/news/${id}`, formData);
 
       console.log("Updation Request is sent")
       console.log(response);
@@ -125,6 +125,7 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
       setCategory("");
       setSelectedTags([]);
       setError("");
+      router.push("/news");
       return;
     }
     if (!category) {

@@ -59,3 +59,29 @@ export async function PUT(req: NextRequest) {
     });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  await dbConnect();
+  const { id } = params;
+
+  try {
+    const article = await Article.findByIdAndDelete(id);
+    if (!article) {
+      return new Response(JSON.stringify({ message: "Article not found" }), {
+        status: 404,
+      });
+    }
+    return new Response(JSON.stringify({ message: "Article deleted" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("Error deleting article:", error);
+    return new Response(JSON.stringify({ message: "Internal server error" }), {
+      status: 500,
+    });
+  }
+}
