@@ -1,20 +1,21 @@
-'use client';
+"use client";
 
-import { UploadDemo } from '@/components/UploadDemo';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { NewsCard } from '@/components/NewsCard';
+import { UploadDemo } from "@/components/UploadDemo";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { NewsCard } from "@/components/NewsCard";
+import { useSession } from "next-auth/react";
 
 const ArticleDetail = ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const router = useRouter();
   const [article, setArticle] = useState(null);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [category, setCategory] = useState('');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [category, setCategory] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const [author, setAuthor] = useState('');
-  const [editMode, setEditMode] = useState(false);
+  const [author, setAuthor] = useState("");
+  const [authorID, setAuthorID] = useState("");
 
   useEffect(() => {
     async function fetchArticle() {
@@ -25,7 +26,8 @@ const ArticleDetail = ({ params }: { params: { id: string } }) => {
       setContent(data.content);
       setCategory(data.category);
       setTags(data.tags);
-      setAuthor(data.author);
+      setAuthor(data.author.firstname + " " + data.author.lastname);
+      setAuthorID(data.author._id);
     }
     fetchArticle();
   }, [id]);
@@ -36,18 +38,16 @@ const ArticleDetail = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="flex mt-20 justify-center h-full w-full">
-    <div className="flex w-full text-black my-20 h-full align-middle justify-center items-center">
-
-    <NewsCard id={id} title={title} content={content} author={author}/>
-
-      {/* {editMode ? (
-        <UploadDemo id={id} title={title} content={content} category={category} tags={tags}/>
-      ) : (
-        
-      )} */}
-
+      <div className="flex w-full text-black my-20 h-full align-middle justify-center items-center">
+        <NewsCard
+          id={id}
+          title={title}
+          content={content}
+          author={author}
+          authorID={authorID}
+        />
+      </div>
     </div>
-  </div>
   );
 };
 

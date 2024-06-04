@@ -10,7 +10,7 @@ export async function GET(
   const { id } = params;
 
   try {
-    const article = await Article.findById(id);
+    const article = await Article.findById(id).populate("author");
     if (!article) {
       return new Response(JSON.stringify({ message: "Article not found" }), {
         status: 404,
