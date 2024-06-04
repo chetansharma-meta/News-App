@@ -13,20 +13,26 @@ export async function POST(
   const user = formData.get("user");
 
   try {
-    const oldReaction = await Reaction.findOne(
-        { user: user, article: id}
+    const oldReaction = await Reaction.findOne({ user: user, article: id });
+    if (oldReaction?.type === "like") {
+      await Reaction.findByIdAndUpdate(
+        oldReaction._id,
+        { type: "dislike" },
+        { new: true }
       );
-      if (oldReaction?.type === "like") {
-        await Reaction.findByIdAndUpdate(
-          oldReaction._id,
-          { type: "dislike" },
-          { new: true }
-        );
-        return new Response(JSON.stringify(oldReaction), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
+      await Article.findByIdAndUpdate(
+        id,
+        {
+          $pull: { likes: oldReaction._id },
+          $push: { dislikes: oldReaction._id },
+        },
+        { new: true }
+      );
+      return new Response(JSON.stringify(oldReaction), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     const reaction = await Reaction.create({
       user: user,
       article: id,
@@ -37,7 +43,7 @@ export async function POST(
     }
     const article = await Article.findByIdAndUpdate(
       id,
-      { $push: { reactions: reaction._id } },
+      { $push: { dislikes: reaction._id } },
       { new: true }
     );
     if (article) {
@@ -55,4 +61,3 @@ export async function POST(
     });
   }
 }
-

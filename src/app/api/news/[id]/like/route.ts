@@ -22,6 +22,14 @@ export async function POST(
         { type: "like" },
         { new: true }
       );
+      await Article.findByIdAndUpdate(
+        id,
+        {
+          $pull: { dislikes: oldReaction._id },
+          $push: { likes: oldReaction._id },
+        },
+        { new: true }
+      );
       return new Response(JSON.stringify(oldReaction), {
         status: 200,
         headers: { "Content-Type": "application/json" },
@@ -37,7 +45,7 @@ export async function POST(
     }
     const article = await Article.findByIdAndUpdate(
       id,
-      { $push: { reactions: reaction._id } },
+      { $push: { likes: reaction._id } },
       { new: true }
     );
     if (article) {
