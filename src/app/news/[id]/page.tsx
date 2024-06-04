@@ -45,6 +45,8 @@ const ArticleDetail = ({ params }: { params: { id: string } }) => {
           content={content}
           author={author}
           authorID={authorID}
+          category={category}
+          tags={tags}
         />
       </div>
     </div>

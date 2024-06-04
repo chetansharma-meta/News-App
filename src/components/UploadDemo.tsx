@@ -125,7 +125,7 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
       setCategory("");
       setSelectedTags([]);
       setError("");
-      router.push("/news");
+      router.push(`/news/${id}`);
       return;
     }
     if (!category) {

@@ -10,6 +10,8 @@ export function NewsCard(props: {
   content: string;
   authorID: string;
   author: string;
+  category: string;
+  tags: string[];
 }) {
   const { data: session } = useSession();
   const route = useRouter();
@@ -48,9 +50,10 @@ export function NewsCard(props: {
   }, []);
 
   const handleEdit = async () => {
-    
-    route.push(`/news/${props.id}/edit`);
-  }
+    const { id, title, content, author, authorID, category, tags } = props;
+    const tagsString = tags.join(',');
+    route.push(`/news/${id}/edit?id=${encodeURIComponent(id)}&title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}&author=${encodeURIComponent(author)}&authorID=${encodeURIComponent(authorID)}&category=${encodeURIComponent(category)}&tags=${encodeURIComponent(tagsString)}`);
+}
 
   const handleLike = async () => {    
     try {
