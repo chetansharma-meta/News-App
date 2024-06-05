@@ -31,24 +31,49 @@ export function News() {
     fetchArticles();
     setLoading(false);
   };
+  console.log(articles);
+
+  const [categoryFilter, setCategoryFilter] = useState<
+    "Politics" | "Sports" | "Tech" | "National" | ""
+  >("");
+  const [sortCriteria, setSortCriteria] = useState<"date" | "popularity" | "">(
+    ""
+  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   return (
     <div className="max-w-5xl mx-auto px-8">
       <div className="flex justify-between items-center mx-5 pt-10">
         <h1 className="text-3xl font-bold">News</h1>
         <div className="flex gap-2">
-          <select className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]">
+          <select
+            className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as any)}
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+          <select
+            value={sortCriteria}
+            onChange={(e) => setSortCriteria(e.target.value as any)}
+            className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
+          >
             <option value="">Sort By</option>
             <option value="date">Date</option>
-            <option value="title">Popularity</option>
-            <option value="category">Criteria</option>
+            <option value="popularity">Popularity</option>
+            {/* <option value="category">Criteria</option> */}
           </select>
-          <select className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]">
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value as any)}
+            className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
+          >
             <option value="">Filter</option>
-            <option value="politics">Politics</option>
-            <option value="tech">Technology</option>
-            <option value="sports">Sports</option>
-            <option value="national">National</option>
+            <option value="Politics">Politics</option>
+            <option value="Tech">Technology</option>
+            <option value="Sports">Sports</option>
+            <option value="National">National</option>
           </select>
         </div>
 
@@ -64,7 +89,12 @@ export function News() {
         )}
       </div>
 
-      <HoverEffect items={articles} />
+      <HoverEffect
+        items={articles}
+        categoryFilter={categoryFilter}
+        sortCriteria={sortCriteria}
+        sortOrder={sortOrder}
+      />
     </div>
   );
 }

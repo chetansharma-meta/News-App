@@ -16,6 +16,7 @@ const ArticleDetail = ({ params }: { params: { id: string } }) => {
   const [tags, setTags] = useState<string[]>([]);
   const [author, setAuthor] = useState("");
   const [authorID, setAuthorID] = useState("");
+  const [time, setTime] = useState("");
 
   useEffect(() => {
     async function fetchArticle() {
@@ -28,6 +29,7 @@ const ArticleDetail = ({ params }: { params: { id: string } }) => {
       setTags(data.tags);
       setAuthor(data.author.firstname + " " + data.author.lastname);
       setAuthorID(data.author._id);
+      setTime(data.updatedAt);
     }
     fetchArticle();
   }, [id]);
@@ -47,6 +49,7 @@ const ArticleDetail = ({ params }: { params: { id: string } }) => {
           authorID={authorID}
           category={category}
           tags={tags}
+          time={time}
         />
       </div>
     </div>

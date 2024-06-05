@@ -12,13 +12,13 @@ export function NewsCard(props: {
   author: string;
   category: string;
   tags: string[];
+  time: string;
 }) {
   const { data: session } = useSession();
   const route = useRouter();
   const [like, setLike] = useState(false);
   const [dislike, setDislike] = useState(false);
   const [authorID, setAuthorID] = useState(props.authorID);
-  const [author, setAuthor] = useState(props.author);
   console.log("AuthorID", authorID);
 
   useEffect(() => {
@@ -100,19 +100,42 @@ export function NewsCard(props: {
     }
   };
 
+  function formatDateTime(isoString: string): string {
+    const date = new Date(isoString);
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+      timeZoneName: 'short',
+    };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  }
+
   return (
     <div className="">
       <div className="w-full relative max-w-lg">
         <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-500 to-teal-500 transform scale-[0.80] bg-red-500 rounded-full blur-3xl" />
         <div className="relative shadow-xl bg-gray-900 border border-gray-800 px-4 py-8 h-full overflow-hidden rounded-2xl flex flex-col justify-end items-start">
-          <h1 className="font-bold text-xl text-white mb-2 relative z-50">
+          <h1 className="font-bold text-2xl text-white mb-2 relative z-50">
             {props.title}
-          </h1>
-          <p className="font-normal text-base text-slate-500 mb-4 relative z-50">
+          </h1> 
+          <p className="font-normal text-lg text-slate-400 my-4 relative z-50">
             {props.content}
           </p>
-          <p className="font-normal text-base text-white relative z-50 py-4">
-            {props.author}
+          <p className="font-normal text-sm text-slate-300 relative z-50 pt-2">
+            Author: {props.author}
+          </p>
+          
+          <p className="font-normal text-sm text-slate-300 relative z-50 py-1">
+            Category: {props.category}
+          </p>
+
+          <p className="font-normal text-sm text-slate-300 relative z-50 pb-4">
+            Uploaded on: {formatDateTime(props.time)} 
           </p>
           <div className="flex justify-between items-center w-full py-2">
             <div className="flex gap-2 items-center text-white">
