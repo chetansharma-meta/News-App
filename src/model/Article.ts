@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, Document, Types } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
 interface IArticle extends Document {
   title: string;

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 import { cn } from "@/utils/cn";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Item {
   title: string;
@@ -19,9 +19,10 @@ interface Item {
 interface HoverEffectProps {
   items: Item[];
   className?: string;
-  categoryFilter: "Politics" | "Sports" | "Tech" | "National" | "";
-  sortCriteria: '' | 'date' | 'popularity';
-  sortOrder: 'asc' | 'desc';
+  categoryFilter: "Politics" | "Sports" | "Tech" | "National" | "all" | "";
+  sortCriteria: "" | "date" | "popularity";
+  sortOrder: "asc" | "desc";
+  searchTags?: string[];
 }
 
 export const HoverEffect: React.FC<HoverEffectProps> = ({
@@ -30,43 +31,62 @@ export const HoverEffect: React.FC<HoverEffectProps> = ({
   categoryFilter,
   sortCriteria,
   sortOrder,
+  searchTags,
 }) => {
   let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const formatDateTime = (isoString: string): string => {
     const date = new Date(isoString);
     const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
-      timeZoneName: 'short',
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     };
-    return new Intl.DateTimeFormat('en-US', options).format(date);
+    return new Intl.DateTimeFormat("en-US", options).format(date);
   };
 
-  // Apply filters to the items array
-  const filteredItems = items.filter(item => {
-    return categoryFilter ? item.category === categoryFilter : true;
-  });
+  let filteredItems: Item[];
 
-  // Apply sorting to the filtered items
+  if (searchTags && searchTags.length > 0 && categoryFilter !== "all") {
+    const lowerCaseSearchTags = searchTags.map((tag) => tag.toLowerCase());
+    const searchedItems = items.filter(item =>
+      item.tags.some(itemTag => lowerCaseSearchTags.includes(itemTag.toLowerCase()))
+    );
+    filteredItems = searchedItems.filter((item) =>
+      categoryFilter ? item.category === categoryFilter : true
+    );
+    console.log("SEARCHED ITEMS", searchedItems);
+  } else {
+    if (categoryFilter !== "all") {
+      filteredItems = items.filter((item) =>
+        categoryFilter ? item.category === categoryFilter : true
+      );
+    } else {
+      filteredItems = items;
+    }
+  }
+
   const sortedItems = filteredItems.sort((a, b) => {
     let compare = 0;
-    if (sortCriteria === 'date') {
-      compare = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
-    } else if (sortCriteria === 'popularity') {
+    if (sortCriteria === "date") {
+      compare =
+        new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
+    } else if (sortCriteria === "popularity") {
       compare = a.likes.length - b.likes.length;
     }
 
-    return sortOrder === 'asc' ? compare : -compare;
+    return sortOrder === "asc" ? compare : -compare;
   });
 
   return (
-    <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-10", className)}>
+    <div
+      className={cn(
+        "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-10",
+        className
+      )}
+    >
       {sortedItems.map((item, idx) => (
         <Link
           href={`/news/${item._id}`}
@@ -82,7 +102,10 @@ export const HoverEffect: React.FC<HoverEffectProps> = ({
                 layoutId="hoverBackground"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { duration: 0.15 } }}
-                exit={{ opacity: 0, transition: { duration: 0.15, delay: 0.2 } }}
+                exit={{
+                  opacity: 0,
+                  transition: { duration: 0.15, delay: 0.2 },
+                }}
               />
             )}
           </AnimatePresence>
@@ -141,7 +164,10 @@ export const CardDescription = ({
 }) => {
   return (
     <p
-      className={cn("mt-8 text-zinc-400 tracking-wide leading-relaxed text-sm", className)}
+      className={cn(
+        "mt-8 text-zinc-400 tracking-wide leading-relaxed text-sm",
+        className
+      )}
     >
       {children}
     </p>
@@ -157,7 +183,10 @@ export const CardTimestamp = ({
 }) => {
   return (
     <p
-      className={cn("mt-8 text-zinc-500 tracking-wide leading-relaxed text-xs", className)}
+      className={cn(
+        "mt-8 text-zinc-500 tracking-wide leading-relaxed text-xs",
+        className
+      )}
     >
       {children}
     </p>

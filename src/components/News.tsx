@@ -3,11 +3,20 @@ import { useState, useEffect } from "react";
 import { HoverEffect } from "./ui/card-hover-effect";
 import axios from "axios";
 import { set } from "mongoose";
+import { useSearchParams } from "next/navigation";
 
 export function News() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const searchParams = useSearchParams();
+  const searchTags = (searchParams.get("tags") || "")
+    .split(",")
+    .filter((tag) => tag);
+  console.log("TAGS", searchTags);
+
+  // console.log("ARTICLES",articles);
 
   const fetchArticles = async () => {
     const res = await axios.get("/api/news");
@@ -17,10 +26,10 @@ export function News() {
       setLoading(false);
       return;
     }
-    console.log(data.articles);
     setArticles(data.articles);
     setLoading(false);
   };
+
   useEffect(() => {
     fetchArticles();
   }, []);
@@ -34,7 +43,7 @@ export function News() {
   console.log(articles);
 
   const [categoryFilter, setCategoryFilter] = useState<
-    "Politics" | "Sports" | "Tech" | "National" | ""
+    "Politics" | "Sports" | "Tech" | "National" | "all" | ""
   >("");
   const [sortCriteria, setSortCriteria] = useState<"date" | "popularity" | "">(
     ""
@@ -44,7 +53,9 @@ export function News() {
   return (
     <div className="max-w-5xl mx-auto px-8">
       <div className="flex justify-between items-center mx-5 pt-10">
-        <h1 className="text-3xl font-bold">News</h1>
+        <h1 className="text-3xl font-bold">
+          {searchTags.length ? "Search Results" : "News"}
+        </h1>
         <div className="flex gap-2">
           <select
             className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
@@ -70,6 +81,7 @@ export function News() {
             className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
           >
             <option value="">Filter</option>
+            {searchTags.length && <option value="all">All</option>}
             <option value="Politics">Politics</option>
             <option value="Tech">Technology</option>
             <option value="Sports">Sports</option>
@@ -94,6 +106,7 @@ export function News() {
         categoryFilter={categoryFilter}
         sortCriteria={sortCriteria}
         sortOrder={sortOrder}
+        searchTags={searchTags}
       />
     </div>
   );

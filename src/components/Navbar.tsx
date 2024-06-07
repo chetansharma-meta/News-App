@@ -4,9 +4,6 @@ import { HoveredLink, Menu, MenuItem, ProductItem } from "@/components/ui/navbar
 import { cn } from "@/utils/cn";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-// import government from "@/public/government.png";
-// import sports from "@/public/sports.png";
-// import tech from "@/public/tech.png";
 
 function Navbar({ className }: { className?: string }) {
   const [active, setActive] = useState<string | null>(null);
@@ -42,19 +39,19 @@ function Navbar({ className }: { className?: string }) {
           <div className="text-sm grid grid-cols-3 gap-10 p-4">
             <ProductItem
               title="Politcs"
-              href="https://algochurn.com"
+              href="/news/politics"
               src="/government.png"
               description="Prepare for tech interviews like never before."
             />
             <ProductItem
               title="Sports"
-              href="https://tailwindmasterkit.com"
+              href="/news/sports"
               src="/running.png"
               description="Production ready Tailwind css components for your next project"
             />
             <ProductItem
               title="Technology"
-              href="https://gomoonbeam.com"
+              href="/news/tech"
               src="/technology.png"
               description="Never write from scratch again. Go from idea to blog in minutes."
             />

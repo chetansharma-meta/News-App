@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { UploadDemo } from "@/components/UploadDemo";
 
 interface QueryParams {
