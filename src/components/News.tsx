@@ -16,7 +16,7 @@ export function News() {
   console.log("TAGS", searchTags);
 
   const fetchArticles = async () => {
-    const res = await api.get("/api/news");
+    const res = await api.get("api/news");
     const data = await res.data;
     if (res.status !== 200) {
       setError(data.message);

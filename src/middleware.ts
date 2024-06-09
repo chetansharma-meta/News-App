@@ -12,20 +12,17 @@ export async function middleware(request: NextRequest) {
     token &&
     (url.pathname.startsWith("/login") ||
       url.pathname.startsWith("/register") ||
-      url.pathname.startsWith("/api")
-    )
-  ) {
-    return NextResponse.redirect(new URL("/profile", request.url));
-  } else if (!token && 
-    (url.pathname.startsWith("/profile") ||
-      url.pathname.startsWith("/upload") ||
       url.pathname.startsWith("/api"))
+  ) {
+    return NextResponse.redirect(new URL("/", request.url));
+  } else if (
+    !token &&
+    (url.pathname.startsWith("/upload") || url.pathname.startsWith("/api"))
   ) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-  
 }
 
 export const config = {
-  matcher: ["/login", "/register","/upload","/api", "/profile/:path*"],
+  matcher: ["/login", "/register", "/upload", "/api"],
 };
