@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { HoverEffect } from "./ui/card-hover-effect";
 import axios from "axios";
-import { set } from "mongoose";
 import { useSearchParams } from "next/navigation";
 
 export function News() {
