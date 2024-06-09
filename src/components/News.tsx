@@ -36,7 +36,7 @@ export function News() {
       setLoading(false);
     };
     fetchArticles();
-  }, [refresh]);
+  }, []);
 
   console.log(articles);
 
