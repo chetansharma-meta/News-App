@@ -2,7 +2,7 @@ import dbConnect from "@/lib/dbConnect";
 import Comment from "@/model/Comment";
 import User from "@/model/User";
 import Article from "@/model/Article";
-import { NextRequest, Response } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest): Promise<void | Response> {
   await dbConnect();
@@ -28,22 +28,28 @@ export async function POST(req: NextRequest): Promise<void | Response> {
         });
         if (articleDB) {
           console.log("Comment Article: ", articleDB);
-          return new Response(JSON.stringify(comment), {
+          return new NextResponse(JSON.stringify(comment), {
             status: 201,
             headers: { "Content-Type": "application/json" },
           });
         }
       }
     }
-    return new Response(JSON.stringify({ message: "Internal server error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new NextResponse(
+      JSON.stringify({ message: "Internal server error" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
     console.log("Error", error);
-    return new Response(JSON.stringify({ message: "Error in creating comment" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new NextResponse(
+      JSON.stringify({ message: "Error in creating comment" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }
