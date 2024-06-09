@@ -53,3 +53,27 @@ export async function POST(req: NextRequest): Promise<void | Response> {
     );
   }
 }
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<void | Response> {
+  await dbConnect();
+  try {
+    const { id } = params;
+    const comments = await Comment.find({ article: id })
+      .select("content user createdAt")
+      .populate("user", "firstname lastname email");
+    return new NextResponse(JSON.stringify(comments), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  catch (error) {
+    console.error("Error fetching comments:", error);
+    return new NextResponse(JSON.stringify({ message: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}

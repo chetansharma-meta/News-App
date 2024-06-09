@@ -5,6 +5,7 @@ import dbConnect from "@/lib/dbConnect";
 export const GET = async (req: NextRequest) => {
   await dbConnect();
   try {
+    console.log("Route hit fetching articles");
     const articles = await Article.find()
       .select(
         "title content category tags author updatedAt likes dislikes comments"
