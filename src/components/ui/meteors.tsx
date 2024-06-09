@@ -3,7 +3,7 @@ import clsx from "clsx";
 import React from "react";
 
 export const Meteors = React.memo(
-  ({ number, className }: { number?: number; className?: string }) => {
+  function Meteors({ number, className }: { number?: number; className?: string }) {
     const meteors = new Array(number || 20).fill(true);
     return (
       <>
@@ -27,3 +27,5 @@ export const Meteors = React.memo(
     );
   }
 );
+
+Meteors.displayName = 'Meteors';
