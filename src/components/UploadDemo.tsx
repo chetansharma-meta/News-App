@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Meteors } from "./ui/meteors";
-import axios from "axios";
+import api from "@/utils/api";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -115,7 +115,7 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
       
       console.log("Form Data Before Sending",formData);
 
-      const response = await axios.put(`/api/news/${id}`, formData);
+      const response = await api.put(`/api/news/${id}`, formData);
 
       console.log("Updation Request is sent")
       console.log(response);
@@ -142,7 +142,7 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
       
       console.log("Form Data Before Sending",formData);
 
-      const response = await axios.post("/api/upload", formData);
+      const response = await api.post("/api/upload", formData);
 
       console.log(response);
 
@@ -178,6 +178,7 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
             />
             <textarea
               placeholder="Content"
+              maxLength={200}
               className="bg-gray-800 text-white px-4 py-2 rounded-lg w-full min-h-[3rem] resize-none overflow-hidden"
               style={{ height: "auto", minHeight: "3rem" }}
               value={content}

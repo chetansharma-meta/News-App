@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000/api/users', // Change this to your backend URL
+    baseURL: process.env.VERCEL_URL ,
 });
 
 export default api;

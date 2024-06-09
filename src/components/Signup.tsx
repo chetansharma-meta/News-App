@@ -9,7 +9,7 @@ import {
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import api from "@/utils/api";
 
 export function Signup() {
   const router = useRouter();
@@ -34,7 +34,7 @@ export function Signup() {
       formData.append("email", user.email);
       formData.append("password", user.password);
 
-      const response = await axios.post("api/auth/register", formData);
+      const response = await api.post("api/auth/register", formData);
       console.log(response.data);
       setLoading(false);
       router.push("/login");

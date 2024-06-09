@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { HoverEffect } from "./ui/card-hover-effect";
-import axios from "axios";
 import { useSearchParams } from "next/navigation";
+import api from "@/utils/api";
 
 export function News() {
   const [articles, setArticles] = useState([]);
@@ -15,8 +15,6 @@ export function News() {
     .filter((tag) => tag);
   console.log("TAGS", searchTags);
 
-  // console.log("ARTICLES",articles);
-
   const refresh = () => {
     setLoading(true);
     setArticles([]);
@@ -25,7 +23,7 @@ export function News() {
 
   useEffect(() => {
     const fetchArticles = async () => {
-      const res = await axios.get("/api/news");
+      const res = await api.get("/api/news");
       const data = await res.data;
       if (res.status !== 200) {
         setError(data.message);
@@ -71,7 +69,6 @@ export function News() {
             <option value="">Sort By</option>
             <option value="date">Date</option>
             <option value="popularity">Popularity</option>
-            {/* <option value="category">Criteria</option> */}
           </select>
           <select
             value={categoryFilter}

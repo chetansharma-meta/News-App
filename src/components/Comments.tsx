@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { formatDateTime } from "@/utils/formatDateTime";
 import { FaLocationArrow } from "react-icons/fa";
+import api from "@/utils/api";
 
 export function Comments(props: { id: string }) {
   const { data: session } = useSession();
@@ -23,7 +23,7 @@ export function Comments(props: { id: string }) {
       formData.append("comment", comment);
       formData.append("user", session?.user._id);
       formData.append("article", props.id);
-      const res = await axios.post(`/api/news/${props.id}/comment`, formData);
+      const res = await api.post(`/api/news/${props.id}/comment`, formData);
       const data = res.data;
       if (!data) return;
       setComments([...comments, data]);
@@ -35,7 +35,7 @@ export function Comments(props: { id: string }) {
 
   useEffect(() => {
     async function fetchComments() {
-      const res = await axios.get(`/api/news/${props.id}/comment`);
+      const res = await api.get(`/api/news/${props.id}/comment`);
       const data = res.data;
       if (!data) return;
       setComments(data);

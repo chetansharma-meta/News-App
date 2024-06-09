@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { CardStack } from "./ui/card-stack";
 import { cn } from "@/utils/cn";
-import axios from "axios";
+import api from "@/utils/api";
 import { useState } from "react";
 
 type Card = {
@@ -20,7 +20,7 @@ export function Hero() {
   useEffect(() => {
     const fetchArticles = async () => {
       setLoading(true);
-      const res = await axios.get("/api/news");
+      const res = await api.get("/api/news");
       const data = res.data;
       if (res.status !== 200) {
         setError(data.message);

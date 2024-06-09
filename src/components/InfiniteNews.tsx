@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { InfiniteMovingCards } from "./ui/infinite-moving-cards";
-import axios from "axios";
+import api from "@/utils/api";
 
 type Card = {
   id: number;
@@ -19,7 +19,7 @@ export function InfiniteNews() {
   useEffect(() => {
     const fetchArticles = async () => {
       setLoading(true);
-      const res = await axios.get("/api/news");
+      const res = await api.get("/api/news");
       const data = res.data;
       if (res.status !== 200) {
         setError(data.message);

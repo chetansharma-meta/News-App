@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Meteors } from "./ui/meteors";
-import axios from "axios";
+import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -25,7 +25,7 @@ export function NewsCard(props: {
       if (session) {
         const formData = new FormData();
         formData.append("user", session?.user?._id as string);
-        const res = await axios.post(
+        const res = await api.post(
           `/api/news/${props.id}/reaction`,
           formData
         );
@@ -64,7 +64,7 @@ export function NewsCard(props: {
       if (dislike) setDislike(false);
       const formData = new FormData();
       formData.append("user", session?.user?._id as string);
-      await axios.post(`/api/news/${props.id}/like`, formData);
+      await api.post(`/api/news/${props.id}/like`, formData);
     } catch (error) {
       console.error("Error updating like status", error);
     }
@@ -80,7 +80,7 @@ export function NewsCard(props: {
       if (like) setLike(false);
       const formData = new FormData();
       formData.append("user", session?.user?._id as string);
-      await axios.post(`/api/news/${props.id}/dislike`, formData);
+      await api.post(`/api/news/${props.id}/dislike`, formData);
     } catch (error) {
       console.error("Error updating dislike status", error);
     }
@@ -92,7 +92,7 @@ export function NewsCard(props: {
         route.push("/login");
         return;
       }
-      await axios.delete(`/api/news/${props.id}`);
+      await api.delete(`/api/news/${props.id}`);
       route.push("/news");
     } catch (error) {
       console.error("Error deleting article", error);
