@@ -17,28 +17,27 @@ export function News() {
 
   // console.log("ARTICLES",articles);
 
-  const fetchArticles = async () => {
-    const res = await axios.get("/api/news");
-    const data = await res.data;
-    if (res.status !== 200) {
-      setError(data.message);
-      setLoading(false);
-      return;
-    }
-    setArticles(data.articles);
+  const refresh = () => {
+    setLoading(true);
+    setArticles([]);
     setLoading(false);
   };
 
   useEffect(() => {
+    const fetchArticles = async () => {
+      const res = await axios.get("/api/news");
+      const data = await res.data;
+      if (res.status !== 200) {
+        setError(data.message);
+        setLoading(false);
+        return;
+      }
+      setArticles(data.articles);
+      setLoading(false);
+    };
     fetchArticles();
-  }, []);
+  }, [refresh]);
 
-  const refresh = () => {
-    setLoading(true);
-    setArticles([]);
-    fetchArticles();
-    setLoading(false);
-  };
   console.log(articles);
 
   const [categoryFilter, setCategoryFilter] = useState<
