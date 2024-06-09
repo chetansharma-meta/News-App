@@ -1,6 +1,5 @@
 "use client";
 
-import { UploadDemo } from "@/components/UploadDemo";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NewsCard } from "@/components/NewsCard";

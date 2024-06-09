@@ -15,26 +15,28 @@ export function News() {
     .filter((tag) => tag);
   console.log("TAGS", searchTags);
 
-  const refresh = () => {
-    setLoading(true);
-    setArticles([]);
+  const fetchArticles = async () => {
+    const res = await api.get("/api/news");
+    const data = await res.data;
+    if (res.status !== 200) {
+      setError(data.message);
+      setLoading(false);
+      return;
+    }
+    setArticles(data.articles);
     setLoading(false);
   };
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      const res = await api.get("/api/news");
-      const data = await res.data;
-      if (res.status !== 200) {
-        setError(data.message);
-        setLoading(false);
-        return;
-      }
-      setArticles(data.articles);
-      setLoading(false);
-    };
     fetchArticles();
   }, []);
+
+  const refresh = () => {
+    setLoading(true);
+    setArticles([]);
+    fetchArticles();
+    setLoading(false);
+  };
 
   console.log(articles);
 
