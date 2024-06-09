@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NewsCard } from "@/components/NewsCard";
 import { useSession } from "next-auth/react";
+import { Comments } from "@/components/Comments";
 
 const ArticleDetail = ({ params }: { params: { id: string } }) => {
   const { id } = params;
@@ -40,7 +41,7 @@ const ArticleDetail = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="flex mt-20 justify-center h-full w-full">
-      <div className="flex w-full text-black my-20 h-full align-middle justify-center items-center">
+      <div className="flex flex-col gap-y-8 w-full text-black my-10 h-full align-middle justify-center items-center">
         <NewsCard
           id={id}
           title={title}
@@ -51,6 +52,7 @@ const ArticleDetail = ({ params }: { params: { id: string } }) => {
           tags={tags}
           time={time}
         />
+        <Comments id={id} />
       </div>
     </div>
   );

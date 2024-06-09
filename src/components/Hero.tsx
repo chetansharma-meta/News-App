@@ -1,14 +1,58 @@
 "use client";
+import { useEffect } from "react";
 import { CardStack } from "./ui/card-stack";
 import { cn } from "@/utils/cn";
+import axios from "axios";
+import { useState } from "react";
+
+type Card = {
+  id: number;
+  name: string;
+  designation: string;
+  content: string;
+};
+
 export function Hero() {
+  const [articles, setArticles] = useState<Card[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      setLoading(true);
+      const res = await axios.get("/api/news");
+      const data = res.data;
+      if (res.status !== 200) {
+        setError(data.message);
+        setLoading(false);
+        return;
+      }
+      setArticles(
+        data.articles.reverse().slice(0, 4).map((article: any,index:number) => ({
+          id: index+1,
+          name: article.author.firstname + " " + article.author.lastname,
+          designation: article.title,
+          content: article.content,
+        }))
+      );
+      setLoading(false);
+    };
+    fetchArticles();
+  }, []);
+
   return (
     <div className="h-[20rem] flex items-center justify-center w-full">
-      <CardStack items={CARDS} />
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <CardStack items={articles} />
+      )}
     </div>
   );
 }
- 
+
 export const Highlight = ({
   children,
   className,
@@ -28,43 +72,3 @@ export const Highlight = ({
   );
 };
 
-const CARDS = [
-  {
-    id: 0,
-    name: "Manu Arora",
-    designation: "Senior Software Engineer",
-    content: (
-      <p>
-        These cards are amazing, <Highlight>I want to use them</Highlight> in my
-        project. Framer motion is a godsend ngl tbh fam 🙏
-      </p>
-    ),
-  },
-  {
-    id: 1,
-    name: "Elon Musk",
-    designation: "Senior Shitposter",
-    content: (
-      <p>
-        I dont like this Twitter thing,{" "}
-        <Highlight>deleting it right away</Highlight> because yolo. Instead, I
-        would like to call it <Highlight>X.com</Highlight> so that it can easily
-        be confused with adult sites.
-      </p>
-    ),
-  },
-  {
-    id: 2,
-    name: "Tyler Durden",
-    designation: "Manager Project Mayhem",
-    content: (
-      <p>
-        The first rule of
-        <Highlight>Fight Club</Highlight> is that you do not talk about fight
-        club. The second rule of
-        <Highlight>Fight club</Highlight> is that you DO NOT TALK about fight
-        club.
-      </p>
-    ),
-  },
-];

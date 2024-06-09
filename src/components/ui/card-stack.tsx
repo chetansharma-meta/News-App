@@ -8,7 +8,7 @@ type Card = {
   id: number;
   name: string;
   designation: string;
-  content: React.ReactNode;
+  content: string;
 };
 
 export const CardStack = ({
@@ -32,13 +32,13 @@ export const CardStack = ({
   const startFlipping = () => {
     interval = setInterval(() => {
       setCards((prevCards: Card[]) => {
-        const newArray = [...prevCards]; // create a copy of the array
-        newArray.unshift(newArray.pop()!); // move the last element to the front
+        const newArray = [...prevCards]; 
+        const lastCard = newArray.pop(); 
+        newArray.unshift(lastCard!); 
         return newArray;
       });
     }, 5000);
   };
-
   return (
     <div className="relative  h-60 w-60 md:h-60 md:w-96">
       {cards.map((card, index) => {

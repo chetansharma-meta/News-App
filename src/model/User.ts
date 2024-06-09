@@ -6,6 +6,7 @@ export interface User extends Document {
   email: string;
   password: string;
   articles: string[];
+  comments: string[];
   verifyCode: string;
   verfiyCodeExpiry: Date;
 }
@@ -34,6 +35,10 @@ const UserSchema: Schema<User> = new Schema({
   articles: [{
     type: Schema.Types.ObjectId,
     ref: "Article"
+  }],
+  comments: [{
+    type: Schema.Types.ObjectId,
+    ref: "Comment"
   }],
   verifyCode: {
     type: String,

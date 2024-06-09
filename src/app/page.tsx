@@ -43,27 +43,6 @@ export default function Home() {
       <div>
         <InfiniteNews />
       </div>
-      {/* <div className="mt-8">
-          {session ? (<button
-            onClick={() => {
-              signOut();
-            }}
-            className="p-2 bg-blue-500 text-white rounded"
-          >
-            Logout
-          </button>) : (
-            
-            <button
-              onClick={() => {
-                router.push("/login");
-              }}
-              className="p-2 bg-blue-500 text-white rounded"
-            >
-              Login
-            </button>
-          
-          )}
-          </div> */}
     </>
   );
 }
