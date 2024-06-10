@@ -1,20 +1,13 @@
 "use client";
-
-import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { HoverEffect } from "./ui/card-hover-effect";
-import Article from "@/type/Article";
+import { useSearchParams } from "next/navigation";
 
-interface NewsClientProps {
-  initialArticles: Article[];
-}
+export function News() {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-const NewsClient = ({ initialArticles }: NewsClientProps) => {
-  const [articles, setArticles] = useState<Article[]>(initialArticles);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const router = useRouter();
   const searchParams = useSearchParams();
   const searchTags = (searchParams.get("tags") || "")
     .split(",")
@@ -22,26 +15,29 @@ const NewsClient = ({ initialArticles }: NewsClientProps) => {
   console.log("TAGS", searchTags);
 
   const fetchArticles = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/news", { method: "GET" });
-      const data = await res.json();
-      if (res.status !== 200) {
-        setError(data.message);
-        setLoading(false);
-        return;
-      }
-      setArticles(data.articles);
+    const res = await fetch("/api/news");
+    const data = await res.json();
+    if (res.status !== 200) {
+      setError(data.message);
       setLoading(false);
-    } catch (err) {
-      setError("Failed to fetch articles");
-      setLoading(false);
+      return;
     }
+    setArticles(data.articles);
+    setLoading(false);
   };
 
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
   const refresh = async () => {
+    setLoading(true);
+    setArticles([]);
     await fetchArticles();
+    setLoading(false);
   };
+
+  console.log(articles);
 
   const [categoryFilter, setCategoryFilter] = useState<
     "Politics" | "Sports" | "Tech" | "National" | "all" | ""
@@ -61,16 +57,14 @@ const NewsClient = ({ initialArticles }: NewsClientProps) => {
           <select
             className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
             value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
+            onChange={(e) => setSortOrder(e.target.value as any)}
           >
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
           </select>
           <select
             value={sortCriteria}
-            onChange={(e) =>
-              setSortCriteria(e.target.value as "date" | "popularity" | "")
-            }
+            onChange={(e) => setSortCriteria(e.target.value as any)}
             className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
           >
             <option value="">Sort By</option>
@@ -79,17 +73,7 @@ const NewsClient = ({ initialArticles }: NewsClientProps) => {
           </select>
           <select
             value={categoryFilter}
-            onChange={(e) =>
-              setCategoryFilter(
-                e.target.value as
-                  | "Politics"
-                  | "Tech"
-                  | "Sports"
-                  | "National"
-                  | "all"
-                  | ""
-              )
-            }
+            onChange={(e) => setCategoryFilter(e.target.value as any)}
             className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
           >
             <option value="">Filter</option>
@@ -105,7 +89,7 @@ const NewsClient = ({ initialArticles }: NewsClientProps) => {
           <button className="items-end">loading...</button>
         ) : (
           <button
-            className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md hover:shadow-lg hover:shadow-[#ffffff2d]"
+            className=" transition-all delay-50 items-center border border-gray-500 p-2 rounded-md hover:shadow-lg hover:shadow-[#ffffff2d]"
             onClick={refresh}
           >
             Refresh
@@ -122,6 +106,4 @@ const NewsClient = ({ initialArticles }: NewsClientProps) => {
       />
     </div>
   );
-};
-
-export default NewsClient;
+}
