@@ -3,21 +3,11 @@ import { cn } from "@/utils/cn";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Article from "@/type/Article";
 
-interface Item {
-  title: string;
-  content: string;
-  _id: string;
-  updatedAt: string;
-  category: string;
-  tags: string[];
-  likes: number[];
-  dislikes: number;
-  comments: string[];
-}
 
 interface HoverEffectProps {
-  items: Item[];
+  items: Article[];
   className?: string;
   categoryFilter: "Politics" | "Sports" | "Tech" | "National" | "all" | "";
   sortCriteria: "" | "date" | "popularity";
@@ -40,14 +30,14 @@ export const HoverEffect: React.FC<HoverEffectProps> = ({
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "long",
-      day: "numeric",
+      day: "numeric", 
       hour: "2-digit",
       minute: "2-digit",
     };
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
 
-  let filteredItems: Item[];
+  let filteredItems: Article[];
 
   if (searchTags && searchTags.length > 0 && categoryFilter !== "all") {
     const lowerCaseSearchTags = searchTags.map((tag) => tag.toLowerCase());
@@ -60,7 +50,7 @@ export const HoverEffect: React.FC<HoverEffectProps> = ({
     console.log("SEARCHED ITEMS", searchedItems);
   } else {
     if (categoryFilter !== "all") {
-      filteredItems = items.filter((item) =>
+      filteredItems = items.filter((item:Article) =>
         categoryFilter ? item.category === categoryFilter : true
       );
     } else {

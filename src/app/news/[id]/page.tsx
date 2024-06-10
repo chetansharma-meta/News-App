@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NewsCard } from "@/components/NewsCard";
-import { useSession } from "next-auth/react";
 import { Comments } from "@/components/Comments";
 
 const ArticleDetail = ({ params }: { params: { id: string } }) => {

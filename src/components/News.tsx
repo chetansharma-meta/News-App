@@ -1,14 +1,20 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { HoverEffect } from "./ui/card-hover-effect";
-import { useSearchParams } from "next/navigation";
-import { unstable_noStore as noStore } from "next/cache";
+import Article from "@/type/Article";
 
-export function News() {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+interface NewsClientProps {
+  initialArticles: Article[];
+}
 
+const NewsClient = ({ initialArticles }: NewsClientProps) => {
+  const [articles, setArticles] = useState<Article[]>(initialArticles);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
   const searchParams = useSearchParams();
   const searchTags = (searchParams.get("tags") || "")
     .split(",")
@@ -16,35 +22,26 @@ export function News() {
   console.log("TAGS", searchTags);
 
   const fetchArticles = async () => {
-    noStore();
-    const res = await fetch("api/news", {
-      method: "GET",
-      next: {
-        revalidate: 10,
-      }
-    });
-    const data = await res.json();
-    if (res.status !== 200) {
-      setError(data.message);
-      setLoading(false);
-      return;
-    }
-    setArticles(data.articles);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchArticles();
-  }, []);
-
-  const refresh = () => {
     setLoading(true);
-    setArticles([]);
-    fetchArticles();
-    setLoading(false);
+    try {
+      const res = await fetch("/api/news", { method: "GET" });
+      const data = await res.json();
+      if (res.status !== 200) {
+        setError(data.message);
+        setLoading(false);
+        return;
+      }
+      setArticles(data.articles);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch articles");
+      setLoading(false);
+    }
   };
 
-  console.log(articles);
+  const refresh = async () => {
+    await fetchArticles();
+  };
 
   const [categoryFilter, setCategoryFilter] = useState<
     "Politics" | "Sports" | "Tech" | "National" | "all" | ""
@@ -64,14 +61,16 @@ export function News() {
           <select
             className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
             value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as any)}
+            onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
           >
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
           </select>
           <select
             value={sortCriteria}
-            onChange={(e) => setSortCriteria(e.target.value as any)}
+            onChange={(e) =>
+              setSortCriteria(e.target.value as "date" | "popularity" | "")
+            }
             className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
           >
             <option value="">Sort By</option>
@@ -80,7 +79,17 @@ export function News() {
           </select>
           <select
             value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value as any)}
+            onChange={(e) =>
+              setCategoryFilter(
+                e.target.value as
+                  | "Politics"
+                  | "Tech"
+                  | "Sports"
+                  | "National"
+                  | "all"
+                  | ""
+              )
+            }
             className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md bg-black text-white shadow-none hover:shadow-lg hover:shadow-[#ffffff2d]"
           >
             <option value="">Filter</option>
@@ -96,7 +105,7 @@ export function News() {
           <button className="items-end">loading...</button>
         ) : (
           <button
-            className=" transition-all delay-50 items-center border border-gray-500 p-2 rounded-md hover:shadow-lg hover:shadow-[#ffffff2d]"
+            className="transition-all delay-50 items-center border border-gray-500 p-2 rounded-md hover:shadow-lg hover:shadow-[#ffffff2d]"
             onClick={refresh}
           >
             Refresh
@@ -113,4 +122,6 @@ export function News() {
       />
     </div>
   );
-}
+};
+
+export default NewsClient;
