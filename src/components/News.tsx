@@ -1,7 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { HoverEffect } from "./ui/card-hover-effect";
 import { useSearchParams } from "next/navigation";
+import { fetchArticles } from "@/data/fetchArticles";
 
 export function News() {
   const [articles, setArticles] = useState([]);
@@ -14,20 +15,16 @@ export function News() {
     .filter((tag) => tag);
   console.log("TAGS", searchTags);
 
-  const fetchArticles = async () => {
-    const res = await fetch("/api/news");
-    const data = await res.json();
-    if (res.status !== 200) {
-      setError(data.message);
-      setLoading(false);
-      return;
-    }
-    setArticles(data.articles);
-    setLoading(false);
-  };
-
   useEffect(() => {
-    fetchArticles();
+    fetchArticles()
+      .then((data) => {
+        setArticles(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error);
+        setLoading(false);
+      });
   }, []);
 
   const refresh = async () => {

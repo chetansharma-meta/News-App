@@ -20,7 +20,7 @@ const categories: Record<Category, string[]> = {
     "Legislation",
     "Campaign",
     "Senate",
-    "Others"
+    "Others",
   ],
   Sports: [
     "Football",
@@ -33,7 +33,7 @@ const categories: Record<Category, string[]> = {
     "Swimming",
     "Athletics",
     "Cycling",
-    "Others"
+    "Others",
   ],
   Tech: [
     "Phone",
@@ -46,7 +46,7 @@ const categories: Record<Category, string[]> = {
     "Blockchain",
     "Cybersecurity",
     "Software",
-    "Others"
+    "Others",
   ],
   National: [
     "Economy",
@@ -59,34 +59,42 @@ const categories: Record<Category, string[]> = {
     "Labor",
     "Agriculture",
     "Transport",
-    "Others"
+    "Others",
   ],
 };
 
-export function UploadDemo(props: { id?: string; title?: string; content?: string; category?: string; tags?: string[] }) {
+export function UploadDemo(props: {
+  id?: string;
+  title?: string;
+  content?: string;
+  category?: string;
+  tags?: string[];
+}) {
   const router = useRouter();
 
   const id = props.id;
-  const {data: session} = useSession();
+  const { data: session } = useSession();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [category, setCategory] = useState<Category | "">(props.category as Category|| "");
+  const [category, setCategory] = useState<Category | "">(
+    (props.category as Category) || ""
+  );
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [error, setError] = useState("");
-  
+
   useEffect(() => {
     if (id) {
       setTitle(props.title || "");
       setContent(props.content || "");
-      setCategory(props.category as Category || "");
-      setSelectedTags(props.tags as Array<string> || []); 
+      setCategory((props.category as Category) || "");
+      setSelectedTags((props.tags as Array<string>) || []);
 
-      console.log("ID is present",id);
-      console.log("Title is present",props.title);
-      console.log("Content is present",props.content);
-      console.log("Category is present",props.category);
-      console.log("Tags are present",typeof props.tags);
-      console.log("Selected Tags are present",typeof selectedTags);
+      console.log("ID is present", id);
+      console.log("Title is present", props.title);
+      console.log("Content is present", props.content);
+      console.log("Category is present", props.category);
+      console.log("Tags are present", typeof props.tags);
+      console.log("Selected Tags are present", typeof selectedTags);
     }
   }, [id]);
 
@@ -102,9 +110,9 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
     );
   };
 
-  const handleSubmit = async (e:any ) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if(id){
+    if (id) {
       const formData = new FormData();
       formData.append("id", id);
       formData.append("title", title);
@@ -112,12 +120,12 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
       formData.append("category", category);
       selectedTags.forEach((tag) => formData.append("tags[]", tag));
       formData.append("user", session?.user?._id);
-      
-      console.log("Form Data Before Sending",formData);
+
+      console.log("Form Data Before Sending", formData);
 
       const response = await api.put(`/api/news/${id}`, formData);
 
-      console.log("Updation Request is sent")
+      console.log("Updation Request is sent");
       console.log(response);
 
       setTitle("");
@@ -139,8 +147,8 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
       formData.append("category", category);
       selectedTags.forEach((tag) => formData.append("tags[]", tag));
       formData.append("user", session?.user?._id);
-      
-      console.log("Form Data Before Sending",formData);
+
+      console.log("Form Data Before Sending", formData);
 
       const response = await api.post("/api/upload", formData);
 
@@ -221,7 +229,7 @@ export function UploadDemo(props: { id?: string; title?: string; content?: strin
                     {tag}
                   </button>
                 ))}
-                  </div>
+              </div>
             </div>
             {error && <p className="text-red-500">{error}</p>}
 
