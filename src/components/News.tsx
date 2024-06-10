@@ -17,7 +17,7 @@ export function News() {
 
   const fetchArticles = async () => {
     noStore();
-    const res = await fetch("api/news", {
+    const res = await fetch(`${process.env.VERCEL_URL}api/news`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
