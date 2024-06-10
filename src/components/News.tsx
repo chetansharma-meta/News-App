@@ -17,11 +17,11 @@ export function News() {
 
   const fetchArticles = async () => {
     noStore();
-    const res = await fetch(`${process.env.VERCEL_URL}api/news`, {
+    const res = await fetch("api/news", {
       method: "GET",
       next: {
         revalidate: 10,
-      },
+      }
     });
     const data = await res.json();
     if (res.status !== 200) {
