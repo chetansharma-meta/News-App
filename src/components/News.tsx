@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { HoverEffect } from "./ui/card-hover-effect";
 import { useSearchParams } from "next/navigation";
-import api from "@/utils/api";
+import { unstable_noStore as noStore } from "next/cache";
 
 export function News() {
   const [articles, setArticles] = useState([]);
@@ -16,8 +16,14 @@ export function News() {
   console.log("TAGS", searchTags);
 
   const fetchArticles = async () => {
-    const res = await api.get("api/news");
-    const data = await res.data;
+    noStore();
+    const res = await fetch("api/news", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
     if (res.status !== 200) {
       setError(data.message);
       setLoading(false);
