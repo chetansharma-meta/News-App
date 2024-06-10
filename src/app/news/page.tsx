@@ -1,9 +1,10 @@
 import React, { Suspense } from "react";
 import NewsClient from "@/components/News";
 import Article from "@/type/Article";
+import {baseURL} from "@/utils/constants";
 
 async function fetchArticles(): Promise<Article[]> {
-  const res = await fetch(`/api/news`);
+  const res = await fetch(`${baseURL}/api/news`, { method: "GET" })
   const data = await res.json();
   return data.articles;
 }
