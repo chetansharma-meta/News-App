@@ -3,7 +3,7 @@ import NewsClient from "@/components/News";
 import Article from "@/type/Article";
 
 async function fetchArticles(): Promise<Article[]> {
-  const res = await fetch(`${process.env.VERCEL}/api/news`);
+  const res = await fetch(`/api/news`);
   const data = await res.json();
   return data.articles;
 }
