@@ -30,7 +30,13 @@ export function News() {
   const refresh = async () => {
     setLoading(true);
     setArticles([]);
-    await fetchArticles();
+    await fetchArticles()
+      .then((data) => {
+        setArticles(data);
+      })
+      .catch((error) => {
+        setError(error);
+      });
     setLoading(false);
   };
 
