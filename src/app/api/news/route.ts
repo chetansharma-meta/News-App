@@ -2,7 +2,7 @@ import Article from "@/model/Article";
 import { NextRequest } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 
-export const GET = async (req: NextRequest) => {
+export async function GET(req: NextRequest) {
   await dbConnect();
   try {
     console.log("Route hit fetching articles");
@@ -21,4 +21,4 @@ export const GET = async (req: NextRequest) => {
       status: 500,
     });
   }
-};
+}
