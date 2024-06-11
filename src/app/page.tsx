@@ -3,18 +3,27 @@ import { Hero } from "@/components/Hero";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Searchbar } from "@/components/Searchbar";
 import { InfiniteNews } from "@/components/InfiniteNews";
 
 export default function Home() {
   const { data: session } = useSession();
   const router = useRouter();
+  console.log(session?.user);
   return (
     <>
       <div className="flex flex-1 flex-row justify-center w-full h-screen">
         <div className="flex justify-center items-center space-x-52 w-4/5">
           <div className="flex flex-col space-y-4">
-            {session ? (<h1 className="text-4xl font-bold">Welcome Back {session?.user.name}</h1>) : (<h1 className="text-4xl font-bold">Welcome to our News App</h1>)}
+            {session ? (
+              <h1 className="text-4xl font-bold">
+                Welcome Back{" "}
+                {session?.user.fullname === "undefined undefined"
+                  ? session.user.name
+                  : session.user.fullname}
+              </h1>
+            ) : (
+              <h1 className="text-4xl font-bold">Welcome to our News App</h1>
+            )}
             <p className="text-lg">Get the latest news and updates</p>
             <div className="space-x-10 ">
               <button className="p-[3px] relative">

@@ -1,8 +1,9 @@
 import { NextAuthOptions } from "next-auth";
-import  CredentialsProvider  from "next-auth/providers/credentials";
+import CredentialsProvider from "next-auth/providers/credentials";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/model/User";
 import bcryptjs from "bcryptjs";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -36,24 +37,30 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    }),
   ],
   callbacks: {
-    async jwt({token, user}) {
+    async jwt({ token, user }) {
       if (user) {
         token._id = user._id?.toString();
         token.email = user.email;
-        token.name = user.firstname + " " + user.lastname;
+        token.name = user.name;
+        token.fullname = user.firstname + " " + user.lastname;
       }
       return token;
     },
-    async session({session, token}) {
+    async session({ session, token }) {
       if (token) {
         session.user._id = token._id;
         session.user.email = token.email;
         session.user.name = token.name;
+        session.user.fullname = token.fullname;
       }
       return session;
-    }
+    },
   },
   pages: {
     signIn: "/login",

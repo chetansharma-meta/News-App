@@ -1,6 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { HoveredLink, Menu, MenuItem, ProductItem } from "@/components/ui/navbar-menu";
+import {
+  HoveredLink,
+  Menu,
+  MenuItem,
+  ProductItem,
+} from "@/components/ui/navbar-menu";
 import { cn } from "@/utils/cn";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
@@ -35,7 +40,7 @@ function Navbar({ className }: { className?: string }) {
             <HoveredLink href="/tech">Tech</HoveredLink>
           </div>
         </MenuItem> */}
-        <MenuItem setActive={setActive} active={active} item="Explore">
+        {/* <MenuItem setActive={setActive} active={active} item="Explore">
           <div className="text-sm grid grid-cols-3 gap-10 p-4">
             <ProductItem
               title="Politcs"
@@ -56,7 +61,7 @@ function Navbar({ className }: { className?: string }) {
               description="Never write from scratch again. Go from idea to blog in minutes."
             />
           </div>
-        </MenuItem> 
+        </MenuItem>  */}
         <Link href={"/search"}>
           <MenuItem
             setActive={setActive}

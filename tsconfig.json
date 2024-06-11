@@ -21,7 +21,7 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/whoami.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/whoami.js", "src/app/NextAuthProvider.js"],
   "exclude": ["node_modules"],
   "paths": {
     "@app/*": ["./app/*"],
