@@ -8,7 +8,6 @@ import { InfiniteNews } from "@/components/InfiniteNews";
 export default function Home() {
   const { data: session } = useSession();
   const router = useRouter();
-  
   console.log(session?.user);
   return (
     <>
